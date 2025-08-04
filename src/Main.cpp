@@ -22,7 +22,7 @@ void FindString()
 		""
 	};
 	std::vector<const char*> outputs = {
-		"Hello, World!"
+		"\x1b[31mRED\n"
 	};
 
 	ProgramSearch<
