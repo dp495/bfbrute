@@ -10,7 +10,7 @@
 
 #define THREAD_COUNT 16
 #define SIZE_START 16
-#define SHOW_ALL_PROGRAMS_LENGTH 85
+#define SHOW_ALL_PROGRAMS_LENGTH 70
 
 template<typename PIteratorT, typename CacheT>
 class ProgramSearch
@@ -209,14 +209,14 @@ public:
 		iterator.SetCache(&cache);
 		iterator.SetDivisionTable(&divisionTable);
 
-		std::cout << " Calculating program count for size " << programSize << "...\r" << std::flush;
+		std::cout << "Calculating program count for size " << programSize << "...\r" << std::flush;
 		programSizeCount = iterator.TotalCount(programSize);
 		std::cout << std::endl << " Completed program count calculation for size " << programSize << std::endl;
 	}
 
 	void SetupSize()
 	{
-		std::cout << "Setting up size " << programSize << std::endl;
+		std::cout << "\n\nSetting up size " << programSize << std::endl;
 
 		sizeStart = std::chrono::system_clock::now();
 		for (uint_fast32_t thread_idx = 0; thread_idx < THREAD_COUNT; thread_idx++)
@@ -269,19 +269,19 @@ private:
 
 					double proportion = static_cast<double>(currentCount) / static_cast<double>(programSizeCount);
 					auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - sizeStart).count();
-					uint_fast64_t remaining = static_cast<double>(elapsed) * (1-proportion) / proportion;
+					uint_fast64_t remaining = static_cast<double>(elapsed) * (1 / proportion - 1);
 
 					auto seconds = remaining % 60;
 					auto minutes = remaining / 60 % 60;
 					auto hours = remaining / 3600 % 24;
-					auto days = remaining / 86400;
+					double days = (remaining / 86400);
 					
 					std::cout 
 						<< std::right
 						<< " " << programSize
-						<< " " << std::setw(10) << std::setprecision(6) << std::fixed << proportion * 100 << "%"
+						<< " " << std::setw(7) << std::setprecision(4) << proportion * 100 << "%"
 						<< " " << iterator.GetProgram()
-						<< " Estimated remaining " << std::setw(3) << days << ":" << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << ":" << std::setw(2) << seconds << std::setfill(' ')
+						<< "  Estimated Remaining: " << std::setprecision(3) << days << "d" << std::setfill('0') << std::setw(2) << hours << "h" << std::setw(2) << minutes << "m" << std::setw(2) << seconds << "s" << std::setfill(' ')
 						<< "          \r" << std::flush;
 				}
 				lock.unlock();
@@ -333,14 +333,14 @@ private:
 				auto seconds = remaining % 60;
 				auto minutes = remaining / 60 % 60;
 				auto hours = remaining / 3600 % 24;
-				auto days = remaining / 86400;
-				
+				double days = (remaining / 86400);
+					
 				std::cout 
 					<< std::right
 					<< " " << programSize
-					<< " " << std::setw(10) << std::setprecision(6) << std::fixed << proportion * 100 << "%"
+					<< " " << std::setw(7) << std::setprecision(4) << proportion * 100 << "%"
 					<< " " << iterator.GetProgram()
-					<< " Estimated remaining " << std::setw(3) << days << ":" << std::setfill('0') << std::setw(2) << hours << ":" << std::setw(2) << minutes << ":" << std::setw(2) << seconds << std::setfill(' ')
+					<< "  Estimated Remaining: " << std::setprecision(3) << days << "d" << std::setfill('0') << std::setw(2) << hours << "h" << std::setw(2) << minutes << "m" << std::setw(2) << seconds << "s" << std::setfill(' ')
 					<< "          \r" << std::flush;
 			}
 
@@ -366,7 +366,7 @@ private:
 
 	std::string Filename()
 	{
-		std::string filename = "/home/ksabry/dev/bfbrute/progress/program_search";
+		std::string filename = "search_progress";
 
 		for (std::string input : inputs)
 		{
